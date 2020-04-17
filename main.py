@@ -65,7 +65,7 @@ def send_msg(msg, media):
         print(f'\n\t{msg}')
         if len(media) > 0:
             # bot.send_photo(chat, media[0], caption=msg)
-            bot.send_message(chat, msg + '\n'.join(media))
+            bot.send_message(chat, msg + ' \n'.join(media))
         else:
             bot.send_message(chat, msg)
 
@@ -90,6 +90,7 @@ def get_new_posts(args):
                 # # print(posts[post_id]['media'])
                 # print('=' * 30)
                 send_msg(posts[post_id]['text'], posts[post_id]['media_url'])
+                
         sleep(args['posts_interval'])
 
 

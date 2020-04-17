@@ -29,9 +29,15 @@ def get_posts(url):
             if tag_more:
                 tag_more.decompose()
             media_url = []
+            # photo
             for m in item.find_all(name='div', attrs={'class': 'thumb_map_img_as_div'}):
                 if m.has_attr('data-src_big'):
                     media_url.append(re.sub(r'\|.*', '', m['data-src_big']))
+            posts[post_id] = {'date': dt, "text": text.text, 'media_url': media_url}
+            # video
+            for m in item.find_all(name='a', attrs={'class': ['thumb_map', 'thumb_map_wide', 'thumb_map_l']}):
+                if m.has_attr('href'):
+                    media_url.append('https://vk.com' + m['href'])
             posts[post_id] = {'date': dt, "text": text.text, 'media_url': media_url}
     except NameError as e:
         print(e)
