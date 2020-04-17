@@ -29,7 +29,7 @@ def get_posts(url):
             if tag_more:
                 tag_more.decompose()
             media_url = []
-            for m in item.find_all(name='div', attrs={'class': 'thumb_map_img_as_div'})
+            for m in item.find_all(name='div', attrs={'class': 'thumb_map_img_as_div'}):
                 if m['data-src_big']:
                     media_url.append(re.sub(r'\|.*', '', m['data-src_big']))
             posts[post_id] = {'date': dt, "text": text.text, 'media_url': media_url}
