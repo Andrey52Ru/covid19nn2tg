@@ -34,6 +34,8 @@ def start_message(message):
         except NameError as e:
             print(e)
             bot.send_message(message.chat.id, "Try again later")
+        else:
+            print(f'New chat ({message.chat.id})')
         finally:
             f.close()
         bot.send_message(message.chat.id, "Started")
@@ -49,7 +51,9 @@ def start_message(message):
             f.write('%s\n' % item)
     except NameError as e:
         print(e)
-        bot.send_message(message.chat.id, "Try again later")
+        bot.send_message(message.chat.id, f"{e}\nTry again later")
+    else:
+        print(f'Delete chat ({message.chat.id})')
     finally:
         f.close()
     bot.send_message(message.chat.id, "Stop")
@@ -58,12 +62,12 @@ def start_message(message):
 def send_msg(msg, media):
     for chat in chat_id:
         print(f'\nMessage to {chat}:')
+        print(f'\n\t{msg}')
         if len(media) > 0:
             # bot.send_photo(chat, media[0], caption=msg)
             bot.send_message(chat, msg + '\n'.join(media))
         else:
             bot.send_message(chat, msg)
-        print(f'\n\t{msg}')
 
 # echo
 # @bot.message_handler(func=lambda message: True)
