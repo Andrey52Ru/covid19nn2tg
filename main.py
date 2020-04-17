@@ -77,7 +77,7 @@ def get_new_posts(args):
                 print(f"{post_id}:\n\t{posts[post_id]['date']}\n\t{posts[post_id]['text']}\n\t{posts[post_id]['media_url']}")
                 # print(posts[post_id]['media'])
                 print('=' * 30)
-                send_msg(f"{posts[post_id]['text']}\n{posts[post_id]['media_url'][0]}")
+                send_msg(f"{posts[post_id]['text']}\n{split(posts[post_id]['media_url'])}")
         sleep(args['posts_interval'])
 
 
