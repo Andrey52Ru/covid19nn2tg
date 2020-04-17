@@ -25,6 +25,7 @@ fn_chat_ids = "./chats.txt"
 @bot.message_handler(commands=['start', 'help'])
 def start_message(message):
     if message.chat.id not in chat_id:
+        print(message)
         chat_id.append(message.chat.id)
         # save to file
         f = open(fn_chat_ids, 'w')
