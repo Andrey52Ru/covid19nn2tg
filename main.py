@@ -54,8 +54,14 @@ def start_message(message):
         f.close()
     bot.send_message(message.chat.id, "Stop")
 
-def send_msg(msg):
-    pass
+
+def send_msg(msg, media):
+    for chat in chat_id:
+        if len(media):
+            # bot.send_photo(chat, media[0], caption=msg)
+            bot.send_message(chat, msg + media.join("\n"))
+        else:
+            bot.send_message(chat, msg)
 
 # echo
 # @bot.message_handler(func=lambda message: True)
@@ -77,7 +83,7 @@ def get_new_posts(args):
                 print(f"{post_id}:\n\t{posts[post_id]['date']}\n\t{posts[post_id]['text']}\n\t{posts[post_id]['media_url']}")
                 # print(posts[post_id]['media'])
                 print('=' * 30)
-                send_msg(f"{posts[post_id]['text']}\n{split(posts[post_id]['media_url'])}")
+                send_msg(f"{posts[post_id]['text']}\n{posts[post_id]['media_url'].join(' ')}")
         sleep(args['posts_interval'])
 
 
