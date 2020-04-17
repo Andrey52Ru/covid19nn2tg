@@ -13,6 +13,9 @@ def get_posts(url):
         soap = BeautifulSoup(page.text, features="html.parser")
 
         for item in soap.find_all(name='div', attrs={'class': "wall_item"}):
+            # skip pined
+            if item.find(name='div', attrs={'class': 'wi_explain'}).text == "запись закреплена":
+                continue
             # msg = item.find(name='div', attrs={'class': "wi_body"})
             post_id = item.find(name='a', attrs={'class': ["post__anchor", "anchor"]})['name']
             dt = item.find(name='a', attrs={'class': "wi_date"}).text
