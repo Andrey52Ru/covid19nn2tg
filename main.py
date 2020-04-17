@@ -57,11 +57,13 @@ def start_message(message):
 
 def send_msg(msg, media):
     for chat in chat_id:
+        print(f'\nMessage to {chat}:')
         if len(media) > 0:
             # bot.send_photo(chat, media[0], caption=msg)
             bot.send_message(chat, msg + '\n'.join(media))
         else:
             bot.send_message(chat, msg)
+        print(f'\n\t{msg}')
 
 # echo
 # @bot.message_handler(func=lambda message: True)
@@ -79,10 +81,10 @@ def get_new_posts(args):
     while args["run"]:
         for post_id in posts:
             if post_id not in sent_posts:
-                print('_' * 30)
-                print(f"{post_id}:\n\t{posts[post_id]['date']}\n\t{posts[post_id]['text']}\n\t{posts[post_id]['media_url']}")
-                # print(posts[post_id]['media'])
-                print('=' * 30)
+                # print('_' * 30)
+                # print(f"{post_id}:\n\t{posts[post_id]['date']}\n\t{posts[post_id]['text']}\n\t{posts[post_id]['media_url']}")
+                # # print(posts[post_id]['media'])
+                # print('=' * 30)
                 send_msg(posts[post_id]['text'], posts[post_id]['media_url'])
         sleep(args['posts_interval'])
 
