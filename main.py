@@ -66,8 +66,6 @@ def send_msg(msg, media):
         print(f'\nMessage to {chat}:')
         print(f'\n\t{msg}')
         if len(media) > 0:
-            # bot.send_photo(chat, media[0], caption=msg)
-            # bot.send_message(chat, msg + '\n[ссылка] (' + ')\n[ссылка] ('.join(media) + ')')
             bot.send_message(chat_id=chat, text=msg + '\n[ссылка](' + ')\n[ссылка]('.join(media) + ')',
                              disable_web_page_preview=False, parse_mode='Markdown')
         else:
@@ -143,7 +141,7 @@ if __name__ == '__main__':
             'posts_interval': 30}
 
     load_data()
-    print('Chats: \n\t{}'.format("\n\t".join(chat_id)))
+    print('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
 
     run_bot_thread = Thread(target=run_bot, args=(info,), daemon=True)
     get_posts_thread = Thread(target=get_new_posts, args=(info,), daemon=True)
