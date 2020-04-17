@@ -90,7 +90,8 @@ def get_new_posts(args):
                 # # print(posts[post_id]['media'])
                 # print('=' * 30)
                 send_msg(posts[post_id]['text'], posts[post_id]['media_url'])
-                
+                sent_posts.add(post_id)
+        save_sent_posts()
         sleep(args['posts_interval'])
 
 
