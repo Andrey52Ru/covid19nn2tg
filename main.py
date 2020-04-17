@@ -67,7 +67,7 @@ def send_msg(msg, media):
         if len(media) > 0:
             # bot.send_photo(chat, media[0], caption=msg)
             # bot.send_message(chat, msg + '\n[ссылка] (' + ')\n[ссылка] ('.join(media) + ')')
-            bot.send_message(chat, msg + '\n[ссылка] (' + ')\n[ссылка] ('.join(media) + ')', {'parseMode': 'Markdown'})
+            bot.send_message(chat, msg + '\n[ссылка] (' + ')\n[ссылка] ('.join(media) + ')', parse_mode='Markdown')
         else:
             bot.send_message(chat, msg)
 
