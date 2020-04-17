@@ -19,8 +19,8 @@ def get_posts(url):
                         or item.find(name='div', attrs={'class': 'wi_explain'}).text == "pinned post":
                     continue
 
-            # msg = item.find(name='div', attrs={'class': "wi_body"})
-            # print(f'\n\n{msg}')
+            msg = item.find(name='div', attrs={'class': "wi_body"})
+            print(f'\n\n{msg}')
 
             post_id = item.find(name='a', attrs={'class': ["post__anchor", "anchor"]})['name']
             dt = item.find(name='a', attrs={'class': "wi_date"}).text
