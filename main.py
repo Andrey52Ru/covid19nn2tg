@@ -120,6 +120,7 @@ if __name__ == '__main__':
     info = {'run': True,
             'url': "https://vk.com/covid19nn",
             'posts_interval': 30}
+
     load_data()
 
     run_bot_thread = Thread(target=run_bot, args=(info,), daemon=True)

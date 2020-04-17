@@ -15,9 +15,9 @@ def get_posts(url):
         for item in soap.find_all(name='div', attrs={'class': "wall_item"}):
             # skip pinned
             if item.find(name='div', attrs={'class': 'wi_explain'}):
-                if item.find(name='div', attrs={'class': 'wi_explain'}).text == "запись закреплена":
+                if item.find(name='div', attrs={'class': 'wi_explain'}).text == "запись закреплена"\
+                        or item.find(name='div', attrs={'class': 'wi_explain'}).text == "pinned post":
                     continue
-            # msg = item.find(name='div', attrs={'class': "wi_body"})
             post_id = item.find(name='a', attrs={'class': ["post__anchor", "anchor"]})['name']
             dt = item.find(name='a', attrs={'class': "wi_date"}).text
             text = item.find(name='div', attrs={'class': "pi_text"})
@@ -27,6 +27,8 @@ def get_posts(url):
             media_url = [re.sub(r'\|.*', '', m['data-src_big']) for m in
                          item.find_all(name='div', attrs={'class': 'thumb_map_img_as_div'})]
             posts[post_id] = {'date': dt, "text": text.text, 'media_url': media_url}
+            msg = item.find(name='div', attrs={'class': "wi_body"})
+            print(f'\n\n{msg}')
     except NameError as e:
         print(e)
 
