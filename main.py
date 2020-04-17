@@ -6,20 +6,15 @@ from vk import get_posts
 
 bot = telebot.TeleBot(TG_TOKEN, threaded=True)
 chat_id = set()
-queue = []
 sent_posts = set()
 
 fn_sent_posts = "./sent_posts.txt"
 fn_chat_ids = "./chats.txt"
 
+
 # @bot.message_handler(content_types=['text'])
 # def get_text_messages(message):
 #     pass
-
-
-# @bot.message_handler(commands=['start', 'help'])
-# def send_welcome(message):
-#     bot.reply_to(message, "Howdy, how are you doing?")
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -55,7 +50,7 @@ def stop_message(message):
         print(e)
         bot.send_message(message.chat.id, f"{e}\nTry again later")
     else:
-        print(f'Delete chat ({message.chat.id})')
+        print(f'Chat is removed ({message.chat.id})')
     finally:
         f.close()
     bot.send_message(message.chat.id, "Stop")
@@ -70,6 +65,7 @@ def send_msg(msg, media):
                              disable_web_page_preview=False, parse_mode='Markdown')
         else:
             bot.send_message(chat, msg)
+
 
 # echo
 # @bot.message_handler(func=lambda message: True)
@@ -124,7 +120,6 @@ def load_data():
     try:
         f = open(fn_chat_ids, 'r')
         for line in f:
-            # delete \n and append
             chat_id.add(int(line))
     except FileNotFoundError:
         print(f"\t File not found: {fn_chat_ids}")
@@ -156,5 +151,4 @@ if __name__ == '__main__':
     bot.stop_polling()
     run_bot_thread.join()
     get_posts_thread.join()
-
 
