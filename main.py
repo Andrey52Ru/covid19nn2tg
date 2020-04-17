@@ -44,6 +44,7 @@ def start_message(message):
 
 @bot.message_handler(commands=['stop'])
 def stop_message(message):
+    print(f'Removing chat {message.chat.id}')
     chat_id.remove(message.chat.id)
     # save to file
     f = open(fn_chat_ids, 'w')
