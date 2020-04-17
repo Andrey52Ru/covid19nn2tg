@@ -57,7 +57,7 @@ def start_message(message):
 
 def send_msg(msg, media):
     for chat in chat_id:
-        if len(media):
+        if len(media) > 0:
             # bot.send_photo(chat, media[0], caption=msg)
             bot.send_message(chat, msg + media.join("\n"))
         else:
