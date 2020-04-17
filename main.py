@@ -54,6 +54,8 @@ def start_message(message):
         f.close()
     bot.send_message(message.chat.id, "Stop")
 
+def send_msg(msg):
+    pass
 
 # echo
 # @bot.message_handler(func=lambda message: True)
@@ -75,6 +77,7 @@ def get_new_posts(args):
                 print(f"{post_id}:\n\t{posts[post_id]['date']}\n\t{posts[post_id]['text']}\n\t{posts[post_id]['media_url']}")
                 # print(posts[post_id]['media'])
                 print('=' * 30)
+                send_msg(f"{posts[post_id]['text']}\n{posts[post_id]['media_url'][0]}")
         sleep(args['posts_interval'])
 
 
