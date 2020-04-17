@@ -5,7 +5,7 @@ from secrets import TG_TOKEN
 from vk import get_posts
 
 bot = telebot.TeleBot(TG_TOKEN, threaded=True)
-chat_id = []
+chat_id = set()
 queue = []
 sent_posts = set()
 
@@ -111,7 +111,7 @@ def load_data():
             # delete \n and append
             sent_posts.add(line[:-1])
     except FileNotFoundError:
-        print("\t -- FileNotFoundError")
+        print(f"\t File not found: {fn_sent_posts}")
     except NameError as e:
         print(e)
     finally:
@@ -122,9 +122,9 @@ def load_data():
         f = open(fn_chat_ids, 'r')
         for line in f:
             # delete \n and append
-            sent_posts.add(line[:-1])
+            chat_id.add(line[:-1])
     except FileNotFoundError:
-        print("\t -- FileNotFoundError")
+        print(f"\t File not found: {fn_chat_ids}")
     except NameError as e:
         print(e)
     finally:
@@ -138,6 +138,7 @@ if __name__ == '__main__':
             'posts_interval': 30}
 
     load_data()
+    print('Chats: \n\t{}'.format("\n\t".join(chat_id)))
 
     run_bot_thread = Thread(target=run_bot, args=(info,), daemon=True)
     get_posts_thread = Thread(target=get_new_posts, args=(info,), daemon=True)
