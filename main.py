@@ -26,7 +26,7 @@ fn_chat_ids = "./chats.txt"
 def start_message(message):
     if message.chat.id not in chat_id:
         print(message)
-        chat_id.append(message.chat.id)
+        chat_id.add(message.chat.id)
         # save to file
         f = open(fn_chat_ids, 'w')
         try:
@@ -43,7 +43,7 @@ def start_message(message):
 
 
 @bot.message_handler(commands=['stop'])
-def start_message(message):
+def stop_message(message):
     chat_id.remove(message.chat.id)
     # save to file
     f = open(fn_chat_ids, 'w')
