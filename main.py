@@ -88,21 +88,32 @@ def save_sent_posts():
 
 
 def load_data():
-    f = open(fn_sent_posts, 'r')
+    f = None
     try:
+        f = open(fn_sent_posts, 'r')
         for line in f:
             # delete \n and append
             sent_posts.add(line[:-1])
+    except FileNotFoundError:
+        print("\t -- FileNotFoundError")
+    except NameError as e:
+        print(e)
     finally:
-        f.close()
+        if f:
+            f.close()
 
-    f = open(fn_chat_ids, 'r')
     try:
+        f = open(fn_chat_ids, 'r')
         for line in f:
             # delete \n and append
             sent_posts.add(line[:-1])
+    except FileNotFoundError:
+        print("\t -- FileNotFoundError")
+    except NameError as e:
+        print(e)
     finally:
-        f.close()
+        if f:
+            f.close()
 
 
 if __name__ == '__main__':
