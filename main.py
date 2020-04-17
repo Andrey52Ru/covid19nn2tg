@@ -127,7 +127,7 @@ def load_data():
         f = open(fn_chat_ids, 'r')
         for line in f:
             # delete \n and append
-            chat_id.add(line[:-1])
+            chat_id.add(int(line))
     except FileNotFoundError:
         print(f"\t File not found: {fn_chat_ids}")
     except NameError as e:
