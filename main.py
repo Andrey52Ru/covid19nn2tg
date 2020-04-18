@@ -145,7 +145,7 @@ if __name__ == '__main__':
     get_posts_thread.start()
     while info["run"]:
         try:
-            pass
+            sleep(1)
         except KeyboardInterrupt:
             bot.stop_polling()
             info["run"] = False
