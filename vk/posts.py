@@ -39,7 +39,7 @@ def get_posts(url):
                 if a:
                     if a.has_attr('href'):
                         if re.match(r'^\/away\.php\?.*', a['href']):
-                            media_url.append(unquote(re.search(r'^\/away.php\?to=(.*)\&+.*&', a['href']).group(0)))
+                            media_url.append(unquote(re.search(r'^\/away.php\?to=(.*)\&+.*&', a['href']).group(1)))
                         else:
                             media_url.append('https://vk.com' + a['href'])
             posts[post_id] = {'date': dt, "text": text.text, 'media_url': media_url}
@@ -48,3 +48,10 @@ def get_posts(url):
         print(e)
 
     return posts
+
+
+if __name__ == '__main__':
+    posts = get_posts("https://vk.com/covid19nn")
+    for i in posts:
+        print(i)
+        print(posts[i]["media_url"])
