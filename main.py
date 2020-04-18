@@ -134,7 +134,7 @@ def load_data():
 if __name__ == '__main__':
     info = {'run': True,
             'url': "https://vk.com/covid19nn",
-            'posts_interval': 30}
+            'posts_interval': 180}
 
     load_data()
     print('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
