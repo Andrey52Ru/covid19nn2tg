@@ -75,9 +75,9 @@ def send_msg(msg, media):
 
 def get_new_posts(args):
     posts = get_posts(args["url"])
-    posts_sorted = posts.keys().sort()
+    posts_keys = posts.keys()
     while args["run"]:
-        for post_id in posts_sorted:
+        for post_id in posts_keys.sort():
             if post_id not in sent_posts:
                 # print('_' * 30)
                 # print(f"{post_id}:\n\t{posts[post_id]['date']}\n\t{posts[post_id]['text']}\n\t{posts[post_id]['media_url']}")
