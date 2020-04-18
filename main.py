@@ -139,18 +139,16 @@ if __name__ == '__main__':
     load_data()
     print('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
 
-    run_bot_thread = Thread(target=bot.infinity_polling(), args=(True,), daemon=True)
+    # run_bot_thread = Thread(target=bot.infinity_polling(), args=(True,), daemon=True)
     get_posts_thread = Thread(target=get_new_posts, args=(info,), daemon=True)
-    run_bot_thread.start()
+    # run_bot_thread.start()
     get_posts_thread.start()
-    while info["run"]:
-        try:
-            sleep(1)
-        except KeyboardInterrupt:
-            bot.stop_polling()
-            info["run"] = False
-            break
+    try:
+        bot.infinity_polling(none_stop=True)
+    except KeyboardInterrupt:
+        bot.stop_polling()
+        info["run"] = False
     bot.stop_polling()
-    run_bot_thread.join()
+    # run_bot_thread.join()
     get_posts_thread.join()
 
