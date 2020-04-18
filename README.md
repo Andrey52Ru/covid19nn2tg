@@ -1,2 +1,2 @@
 # covid19nn2tg
-Redirect posts from https://vk.com/covid19nn to Telegram
+Отправляет посты из https://vk.com/covid19nn в Telegram
