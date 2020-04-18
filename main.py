@@ -91,7 +91,7 @@ def get_new_posts(args):
 
 def run_bot(args):
     # bot.polling(none_stop=True)
-    bot.infinity_polling(args)
+    bot.infinity_polling(none_stop=True)
 
 
 def save_sent_posts():
