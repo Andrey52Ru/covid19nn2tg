@@ -1,5 +1,6 @@
-# import re
+import re
 import requests
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
 
@@ -37,7 +38,10 @@ def get_posts(url):
                 a = m.find(name='a')
                 if a:
                     if a.has_attr('href'):
-                        media_url.append('https://vk.com' + a['href'])
+                        if re.match(r'^\/away\.php\?.*', a['href']):
+                            media_url.append(urlparse.unquote(re.search(r'^\/away.php\?to=(.*)\&+.*&', a['href']).group(0)))
+                        else:
+                            media_url.append('https://vk.com' + a['href'])
             posts[post_id] = {'date': dt, "text": text.text, 'media_url': media_url}
 
     except NameError as e:
