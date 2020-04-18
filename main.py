@@ -74,17 +74,19 @@ def send_msg(msg, media):
 
 
 def get_new_posts(args):
-    posts = get_posts(args["url"])
-    posts_keys = list(posts.keys())
     while args["run"]:
-        for post_id in posts_keys.sort():
-            if post_id not in sent_posts:
-                # print('_' * 30)
-                # print(f"{post_id}:\n\t{posts[post_id]['date']}\n\t{posts[post_id]['text']}\n\t{posts[post_id]['media_url']}")
-                # # print(posts[post_id]['media'])
-                # print('=' * 30)
-                send_msg(posts[post_id]['text'], posts[post_id]['media_url'])
-                sent_posts.add(post_id)
+        posts = get_posts(args["url"])
+        posts_keys = list(posts.keys())
+        if len(posts_keys) > 0:
+            for post_id in posts_keys.sort():
+                if post_id not in sent_posts:
+                    print(f'Sending {post_id}')
+                    # print('_' * 30)
+                    # print(f"{post_id}:\n\t{posts[post_id]['date']}\n\t{posts[post_id]['text']}\n\t{posts[post_id]['media_url']}")
+                    # # print(posts[post_id]['media'])
+                    # print('=' * 30)
+                    send_msg(posts[post_id]['text'], posts[post_id]['media_url'])
+                    sent_posts.add(post_id)
         save_sent_posts()
         sleep(args['posts_interval'])
 
