@@ -77,6 +77,8 @@ def get_new_posts(args):
     while args["run"]:
         posts = get_posts(args["url"])
         posts_keys = list(posts.keys())
+        print(type(posts_keys))
+        print(posts_keys)
         if len(posts_keys) > 0:
             for post_id in posts_keys.sort():
                 if post_id not in sent_posts:
