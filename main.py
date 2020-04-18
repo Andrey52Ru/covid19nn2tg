@@ -73,13 +73,6 @@ def send_msg(msg, media):
 #     bot.reply_to(message, message.text)
 
 
-def run_bot(args):
-    while args["run"]:
-        # bot.polling(none_stop=True)
-        bot.infinity_polling(timeout=60)
-        sleep(60)
-
-
 def get_new_posts(args):
     posts = get_posts(args["url"])
     while args["run"]:
@@ -140,14 +133,16 @@ if __name__ == '__main__':
     load_data()
     print('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
 
-    run_bot_thread = Thread(target=run_bot, args=(info,), daemon=True)
+    # run_bot_thread = Thread(target=bot.infinity_polling(), args=(True,), daemon=True)
+    run_bot_thread = Thread(target=bot.infinity_polling())
     get_posts_thread = Thread(target=get_new_posts, args=(info,), daemon=True)
     run_bot_thread.start()
     get_posts_thread.start()
-    while True:
+    while info["run"]:
         try:
-            sleep(30)
+            pass
         except KeyboardInterrupt:
+            bot.stop_polling()
             info["run"] = False
             break
     bot.stop_polling()
