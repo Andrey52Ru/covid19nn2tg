@@ -43,4 +43,4 @@ def get_posts(url):
     except NameError as e:
         print(e)
 
-    return posts
+    return posts.__reversed__()

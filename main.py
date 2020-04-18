@@ -88,6 +88,11 @@ def get_new_posts(args):
         sleep(args['posts_interval'])
 
 
+def run_bot(args):
+    # bot.polling(none_stop=True)
+    bot.infinity_polling(args)
+
+
 def save_sent_posts():
     try:
         with open(fn_sent_posts, 'w') as f:
@@ -133,8 +138,7 @@ if __name__ == '__main__':
     load_data()
     print('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
 
-    # run_bot_thread = Thread(target=bot.infinity_polling(), args=(True,), daemon=True)
-    run_bot_thread = Thread(target=bot.infinity_polling())
+    run_bot_thread = Thread(target=bot.infinity_polling(), args=(True,), daemon=True)
     get_posts_thread = Thread(target=get_new_posts, args=(info,), daemon=True)
     run_bot_thread.start()
     get_posts_thread.start()
