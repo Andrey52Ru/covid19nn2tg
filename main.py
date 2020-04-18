@@ -79,7 +79,7 @@ def get_new_posts(args):
         posts_keys = list(posts.keys())
         print(type(posts_keys))
         print(posts_keys)
-        if len(posts_keys) > 0:
+        if len(posts_keys) > 10000:
             for post_id in posts_keys.sort():
                 if post_id not in sent_posts:
                     print(f'Sending {post_id}')
