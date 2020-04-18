@@ -74,8 +74,10 @@ def send_msg(msg, media):
 
 
 def run_bot(args):
-    # bot.polling(none_stop=True)
-    bot.infinity_polling(True)
+    while args["run"]:
+        # bot.polling(none_stop=True)
+        bot.infinity_polling(timeout=60)
+        sleep(60)
 
 
 def get_new_posts(args):
