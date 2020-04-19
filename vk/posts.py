@@ -51,7 +51,7 @@ def get_posts(url):
 
 
 if __name__ == '__main__':
-    posts = get_posts("https://vk.com/covid19nn")
-    for i in posts:
+    p = get_posts("https://vk.com/covid19nn")
+    for i in p:
         print(i)
-        print(posts[i]["media_url"])
+        print(p[i]["media_url"])
