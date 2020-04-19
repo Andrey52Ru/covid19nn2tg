@@ -1,6 +1,6 @@
 import telebot
 import sys
-from threading import Thread
+from threading import Thread, Lock
 from time import sleep
 import logging
 from secrets import TG_TOKEN
@@ -9,6 +9,7 @@ import vk
 fn_sent_posts = r"./sent_posts.txt"
 fn_chat_ids = r"./chats.txt"
 RUN = True
+mutex = Lock()
 
 chat_id = set()
 sent_posts = set()
@@ -46,7 +47,32 @@ def logger_init(loggers, log_file, log_level=logging.ERROR,
 def start_message(message):
     logger.debug(f'New chat {message.chat.id}...')
     if message.chat.id not in chat_id:
-        chat_id.add(message.chat.id)
+        mutex.acquire()
+        try:
+            chat_id.add(message.chat.id)
+            # save to file
+            f = open(fn_chat_ids, 'w')
+            try:
+                for item in chat_id:
+                    f.write('%s\n' % item)
+            except NameError as e:
+                logger.error(r"Exception: " + str(e))
+                bot.send_message(message.chat.id, "Try again later")
+            else:
+                logger.info(f'Success: new chat {message.chat.id}. Total: {len(chat_id)}')
+            finally:
+                f.close()
+        finally:
+            mutex.release()
+        bot.send_message(message.chat.id, "Started")
+
+
+@bot.message_handler(commands=['stop'])
+def stop_message(message):
+    logger.debug(f'Removing chat {message.chat.id}...')
+    mutex.acquire()
+    try:
+        chat_id.remove(message.chat.id)
         # save to file
         f = open(fn_chat_ids, 'w')
         try:
@@ -54,31 +80,20 @@ def start_message(message):
                 f.write('%s\n' % item)
         except NameError as e:
             logger.error(r"Exception: " + str(e))
-            bot.send_message(message.chat.id, "Try again later")
+            bot.send_message(message.chat.id, f"{e}\nTry again later")
         else:
-            logger.info(f'Success: new chat {message.chat.id}. Total: {len(chat_id)}')
+            logger.info(f'Success: removed chat {message.chat.id}. Total: {len(chat_id)}')
         finally:
             f.close()
-        bot.send_message(message.chat.id, "Started")
-
-
-@bot.message_handler(commands=['stop'])
-def stop_message(message):
-    logger.debug(f'Removing chat {message.chat.id}...')
-    chat_id.remove(message.chat.id)
-    # save to file
-    f = open(fn_chat_ids, 'w')
-    try:
-        for item in chat_id:
-            f.write('%s\n' % item)
-    except NameError as e:
-        logger.error(r"Exception: " + str(e))
-        bot.send_message(message.chat.id, f"{e}\nTry again later")
-    else:
-        logger.info(f'Success: removed chat {message.chat.id}. Total: {len(chat_id)}')
     finally:
-        f.close()
+        mutex.release()
     bot.send_message(message.chat.id, "Stop")
+
+
+@bot.message_handler(commands=['status'])
+def status_message(message):
+    logger.debug(f'Status command from chat {message.chat.id}...')
+    bot.send_message(message.chat.id, "Running...")
 
 
 def send_msg(post_id, msg, media):
@@ -128,12 +143,15 @@ def load_data():
 
 
 def save_sent_posts():
+    mutex.acquire()
     try:
         with open(fn_sent_posts, 'w') as f:
             for item in sent_posts:
                 f.write('%s\n' % item)
     except NameError as e:
         logger.error(r"Exception: " + str(e))
+    finally:
+        mutex.release()
 
 
 def get_new_posts(args):
