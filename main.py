@@ -25,6 +25,7 @@ logger.addHandler(logger_output_handler)
 vk.logger.setLevel(log_level)
 vk.logger.addHandler(logger_output_handler)
 
+log_level = logging.ERROR
 telebot.logger.setLevel(log_level)
 telebot.logger.addHandler(logger_output_handler)
 
