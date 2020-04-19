@@ -46,7 +46,7 @@ fn_chat_ids = r"./chats.txt"
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    logging.debug(f'New chat {message.chat.id}...')
+    logger.debug(f'New chat {message.chat.id}...')
     if message.chat.id not in chat_id:
         chat_id.add(message.chat.id)
         # save to file
@@ -55,17 +55,17 @@ def start_message(message):
             for item in chat_id:
                 f.write('%s\n' % item)
         except NameError as e:
-            logging.error(r"Exception: " + e)
+            logger.error(r"Exception: " + e)
             bot.send_message(message.chat.id, "Try again later")
         else:
-            logging.info(f'Success: new chat {message.chat.id}. Total: {len(chat_id)}')
+            logger.info(f'Success: new chat {message.chat.id}. Total: {len(chat_id)}')
         finally:
             f.close()
         bot.send_message(message.chat.id, "Started")
 
 @bot.message_handler(commands=['stop'])
 def stop_message(message):
-    logging.debug(f'Removing chat {message.chat.id}...')
+    logger.debug(f'Removing chat {message.chat.id}...')
     chat_id.remove(message.chat.id)
     # save to file
     f = open(fn_chat_ids, 'w')
@@ -73,25 +73,25 @@ def stop_message(message):
         for item in chat_id:
             f.write('%s\n' % item)
     except NameError as e:
-        logging.error(r"Exception: " + e)
+        logger.error(r"Exception: " + e)
         bot.send_message(message.chat.id, f"{e}\nTry again later")
     else:
-        logging.info(f'Success: removed chat {message.chat.id}. Total: {len(chat_id)}')
+        logger.info(f'Success: removed chat {message.chat.id}. Total: {len(chat_id)}')
     finally:
         f.close()
     bot.send_message(message.chat.id, "Stop")
 
 
 def send_msg(post_id, msg, media):
-    logging.info(f'Sending message {post_id}...')
+    logger.info(f'Sending message {post_id}...')
     for chat in chat_id:
-        logging.debug(f'\nMessage to chat {chat}:')
+        logger.debug(f'\nMessage to chat {chat}:')
         if len(media) > 0:
             bot.send_message(chat_id=chat, text=msg + '\n[ссылка](' + ')\n[ссылка]('.join(media) + ')',
                              disable_web_page_preview=False, parse_mode='Markdown')
         else:
             bot.send_message(chat, msg)
-    logging.debug('Post: {}\n\t{}\n\tMedia:'.format(post_id, msg, '\n'.join(media)))
+    logger.debug('Post: {}\n\t{}\n\tMedia:'.format(post_id, msg, '\n'.join(media)))
 
 
 # echo
@@ -125,7 +125,7 @@ def save_sent_posts():
             for item in sent_posts:
                 f.write('%s\n' % item)
     except NameError as e:
-        logging.error(r"Exception: " + e)
+        logger.error(r"Exception: " + e)
 
 
 def load_data():
@@ -136,9 +136,9 @@ def load_data():
             # delete \n and append
             sent_posts.add(line[:-1])
     except FileNotFoundError:
-        logging.warning(f"\t File not found: {fn_sent_posts}")
+        logger.warning(f"\t File not found: {fn_sent_posts}")
     except NameError as e:
-        logging.error(r"Exception: " + e)
+        logger.error(r"Exception: " + e)
     finally:
         if f:
             f.close()
@@ -148,9 +148,9 @@ def load_data():
         for line in f:
             chat_id.add(int(line))
     except FileNotFoundError:
-        logging.warning(f"\t File not found: {fn_chat_ids}")
+        logger.warning(f"\t File not found: {fn_chat_ids}")
     except NameError as e:
-        logging.error(r"Exception: " + e)
+        logger.error(r"Exception: " + e)
     finally:
         if f:
             f.close()
@@ -162,7 +162,7 @@ if __name__ == '__main__':
             'posts_interval': 180}
 
     load_data()
-    logging.info('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
+    logger.info('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
 
     # run_bot_thread = Thread(target=bot.infinity_polling(), args=(True,), daemon=True)
     get_posts_thread = Thread(target=get_new_posts, args=(info,), daemon=True)
