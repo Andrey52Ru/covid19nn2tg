@@ -20,7 +20,7 @@ logger_output_handlers = [logging.FileHandler('/tmp/bot.log', 'a'),
 for h in logger_output_handlers:
     h.setFormatter(formatter)
 #
-logger = logging.getLogger(r"covid19nn2tg_bot")
+logger = logging.getLogger(r"main_log")
 
 for lg in (logger, telebot.logger, vk.logger):
     lg.setLevel(log_level)
