@@ -165,7 +165,8 @@ def get_new_posts(args, bot, run):
         for i in range(args['posts_interval']):
             if not RUN:
                 break
-            sleep(1)
+            sleep(10)
+            logger.debug(f"+++++++++++++++++++++\nRUN: {str(RUN)}\t-\trun: {str(run)}\n++++++++++++++++++++++")
 
 
 if __name__ == '__main__':
@@ -187,7 +188,7 @@ if __name__ == '__main__':
     try:
         telegram_bot.infinity_polling(none_stop=True)
     except KeyboardInterrupt:
-        telegram_bot.stop_polling()
         RUN = False
+        telegram_bot.stop_polling()
     # run_bot_thread.join()
     get_posts_thread.join()
