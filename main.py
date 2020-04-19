@@ -23,7 +23,7 @@ logger = logging.getLogger(r"covid19nn2tg_bot")
 
 for lg in (logger, telebot.logger, vk.logger):
     lg.setLevel(log_level)
-    for h in l.handlers[:]:  # remove all old handlers
+    for h in lg.handlers[:]:  # remove all old handlers
         lg.removeHandler(h)
     for h in logger_output_handlers:
         lg.addHandler(h)
