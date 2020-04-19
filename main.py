@@ -1,18 +1,32 @@
 import telebot
+import sys
 from threading import Thread
 from time import sleep
-from secrets import TG_TOKEN
-from vk import get_posts
 import logging
+from secrets import TG_TOKEN
+import vk
 
+log_level = logging.DEBUG
 
-logger = logging.getLogger(r"covid19nn2tg_bot")
 formatter = logging.Formatter(
     '%(asctime)s (%(filename)s:%(lineno)d %(threadName)s) %(levelname)s - %(name)s: "%(message)s"'
 )
 
+logger_output_handler = logging.StreamHandler(sys.stderr)
+logger_output_handler.setFormatter(formatter)
+
+
 bot = telebot.TeleBot(TG_TOKEN, threaded=False)
-telebot.logger.setLevel(logging.DEBUG)
+
+logger = logging.getLogger(r"covid19nn2tg_bot")
+logger.setLevel(log_level)
+logger.addHandler(logger_output_handler)
+
+vk.logger.setLevel(log_level)
+vk.logger.addHandler(logger_output_handler)
+
+telebot.logger.setLevel(log_level)
+telebot.logger.addHandler(logger_output_handler)
 
 chat_id = set()
 sent_posts = set()
@@ -84,7 +98,7 @@ def send_msg(post_id, msg, media):
 
 def get_new_posts(args):
     while args["run"]:
-        posts = get_posts(args["url"])
+        posts = vk.get_posts(args["url"])
         for post_id in list(posts.keys())[::-1]:    # reverse
             if post_id not in sent_posts:
                 send_msg(post_id, posts[post_id]['text'], posts[post_id]['media_url'])

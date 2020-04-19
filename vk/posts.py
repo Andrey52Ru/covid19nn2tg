@@ -2,6 +2,10 @@ import re
 import requests
 from urllib.parse import unquote
 from bs4 import BeautifulSoup
+import logging
+
+logger = logging.getLogger(r"vk_parser")
+logger.setLevel(logging.ERROR)
 
 
 def get_posts(url):
