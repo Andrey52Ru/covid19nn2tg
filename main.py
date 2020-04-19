@@ -6,27 +6,31 @@ import logging
 from secrets import TG_TOKEN
 import vk
 
-log_level = logging.DEBUG
+bot = telebot.TeleBot(TG_TOKEN, threaded=True)
 
+log_level = logging.DEBUG
+#
 formatter = logging.Formatter(
     '%(asctime)s (%(filename)s:%(lineno)d %(threadName)s) %(levelname)s - %(name)s: "%(message)s"'
 )
-
-logger_output_handler = logging.StreamHandler(sys.stderr)
+# logger_output_handler = logging.StreamHandler(sys.stderr)
+logger_output_handler = logging.FileHandler('/tmp/bot.log', 'a')
 logger_output_handler.setFormatter(formatter)
-
-
-bot = telebot.TeleBot(TG_TOKEN, threaded=False)
-
+#
 logger = logging.getLogger(r"covid19nn2tg_bot")
 logger.setLevel(log_level)
-# logger.addHandler(logger_output_handler)
-
+logger.addHandler(logger_output_handler)
+#
+# log_level = logging.ERROR
 vk.logger.setLevel(log_level)
+for h in vk.logger.handlers[:]:  # remove all old handlers
+    vk.logger.removeHandler(h)
 vk.logger.addHandler(logger_output_handler)
-
-log_level = logging.ERROR
+#
+# log_level = logging.ERROR
 telebot.logger.setLevel(log_level)
+for h in telebot.logger.handlers[:]:  # remove all old handlers
+    telebot.logger.removeHandler(h)
 telebot.logger.addHandler(logger_output_handler)
 
 chat_id = set()
