@@ -20,7 +20,7 @@ bot = telebot.TeleBot(TG_TOKEN, threaded=False)
 
 logger = logging.getLogger(r"covid19nn2tg_bot")
 logger.setLevel(log_level)
-logger.addHandler(logger_output_handler)
+# logger.addHandler(logger_output_handler)
 
 vk.logger.setLevel(log_level)
 vk.logger.addHandler(logger_output_handler)
