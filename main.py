@@ -92,7 +92,7 @@ def stop_message(message):
 
 @bot.message_handler(commands=['status'])
 def status_message(message):
-    logger.debug(f'Status command from chat {message.chat.id}...')
+    logger.info(f'Status command from chat {message.chat.id}...')
     bot.send_message(message.chat.id, "Running...")
 
 
