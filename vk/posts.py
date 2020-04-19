@@ -14,8 +14,8 @@ def get_posts(url):
         page = requests.get(url)
         if page.status_code != 200:
             return posts
-
         soap = BeautifulSoup(page.text, features="html.parser")
+        page.close()
 
         for item in soap.find_all(name='div', attrs={'class': "wall_item"}):
             # skip pinned
@@ -54,8 +54,10 @@ def get_posts(url):
     return posts
 
 
+# Debug
 if __name__ == '__main__':
     p = get_posts("https://vk.com/covid19nn")
     for i in p:
         print(i)
         print(p[i]["media_url"])
+
