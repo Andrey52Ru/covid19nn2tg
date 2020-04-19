@@ -181,7 +181,7 @@ if __name__ == '__main__':
     logger.info('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
 
     # run_bot_thread = Thread(target=telegram_bot.infinity_polling(), args=(True,), daemon=True)
-    get_posts_thread = Thread(target=get_new_posts, args=(conf, telegram_bot, name='get_posts_thread', daemon=True)
+    get_posts_thread = Thread(target=get_new_posts, args=(conf, telegram_bot), name='get_posts_thread', daemon=True)
     # run_bot_thread.start()
     get_posts_thread.start()
     try:
