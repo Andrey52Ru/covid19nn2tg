@@ -14,24 +14,22 @@ formatter = logging.Formatter(
     '%(asctime)s (%(filename)s:%(lineno)d %(threadName)s) %(levelname)s - %(name)s: "%(message)s"'
 )
 # logger_output_handler = logging.StreamHandler(sys.stderr)
-logger_output_handler = logging.FileHandler('/tmp/bot.log', 'a')
-logger_output_handler.setFormatter(formatter)
+logger_output_handlers = [logging.FileHandler('/tmp/bot.log', 'a'),
+                          logging.StreamHandler(sys.stderr)]
+for h in logger_output_handlers:
+    h.setFormatter(formatter)
 #
 logger = logging.getLogger(r"covid19nn2tg_bot")
-logger.setLevel(log_level)
-logger.addHandler(logger_output_handler)
-#
-# log_level = logging.ERROR
-vk.logger.setLevel(log_level)
-for h in vk.logger.handlers[:]:  # remove all old handlers
-    vk.logger.removeHandler(h)
-vk.logger.addHandler(logger_output_handler)
-#
-# log_level = logging.ERROR
-telebot.logger.setLevel(log_level)
-for h in telebot.logger.handlers[:]:  # remove all old handlers
-    telebot.logger.removeHandler(h)
-telebot.logger.addHandler(logger_output_handler)
+
+for lg in (logger, telebot.logger, vk.logger):
+    lg.setLevel(log_level)
+    for h in l.handlers[:]:  # remove all old handlers
+        lg.removeHandler(h)
+    for h in logger_output_handlers:
+        lg.addHandler(h)
+
+# vk.logger.setLevel(logging.ERROR)
+# telebot.logger.setLevel(logging.ERROR)
 
 chat_id = set()
 sent_posts = set()
