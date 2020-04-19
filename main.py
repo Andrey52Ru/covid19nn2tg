@@ -14,7 +14,7 @@ mutex = Lock()
 chat_id = set()
 sent_posts = set()
 
-bot = telebot.TeleBot(TG_TOKEN, threaded=True)
+telegram_bot = telebot.TeleBot(TG_TOKEN, threaded=True)
 logger = logging.getLogger(r"main_log")
 
 
@@ -38,12 +38,12 @@ def logger_init(loggers, log_file, log_level=logging.ERROR,
     # telebot.logger.setLevel(logging.ERROR)
 
 
-# @bot.message_handler(content_types=['text'])
+# @telegram_bot.message_handler(content_types=['text'])
 # def get_text_messages(message):
 #     pass
 
 
-@bot.message_handler(commands=['start'])
+@telegram_bot.message_handler(commands=['start'])
 def start_message(message):
     logger.debug(f'New chat {message.chat.id}...')
     if message.chat.id not in chat_id:
@@ -57,17 +57,17 @@ def start_message(message):
                     f.write('%s\n' % item)
             except NameError as e:
                 logger.error(r"Exception: " + str(e))
-                bot.send_message(message.chat.id, "Try again later")
+                telegram_bot.send_message(message.chat.id, "Try again later")
             else:
                 logger.info(f'Success: new chat {message.chat.id}. Total: {len(chat_id)}')
             finally:
                 f.close()
         finally:
             mutex.release()
-        bot.send_message(message.chat.id, "Started")
+        telegram_bot.send_message(message.chat.id, "Started")
 
 
-@bot.message_handler(commands=['stop'])
+@telegram_bot.message_handler(commands=['stop'])
 def stop_message(message):
     logger.debug(f'Removing chat {message.chat.id}...')
     mutex.acquire()
@@ -80,23 +80,23 @@ def stop_message(message):
                 f.write('%s\n' % item)
         except NameError as e:
             logger.error(r"Exception: " + str(e))
-            bot.send_message(message.chat.id, f"{e}\nTry again later")
+            telegram_bot.send_message(message.chat.id, f"{e}\nTry again later")
         else:
             logger.info(f'Success: removed chat {message.chat.id}. Total: {len(chat_id)}')
         finally:
             f.close()
     finally:
         mutex.release()
-    bot.send_message(message.chat.id, "Stop")
+    telegram_bot.send_message(message.chat.id, "Stop")
 
 
-@bot.message_handler(commands=['status'])
+@telegram_bot.message_handler(commands=['status'])
 def status_message(message):
     logger.info(f'Status command from chat {message.chat.id}...')
-    bot.send_message(message.chat.id, "Running...")
+    telegram_bot.send_message(message.chat.id, "Running...")
 
 
-def send_msg(post_id, msg, media):
+def send_msg(bot, post_id, msg, media):
     logger.info(f'Sending message {post_id}...')
     for chat in chat_id:
         logger.debug(f'\nMessage to chat {chat}:')
@@ -109,9 +109,9 @@ def send_msg(post_id, msg, media):
 
 
 # echo
-# @bot.message_handler(func=lambda message: True)
+# @telegram_bot.message_handler(func=lambda message: True)
 # def echo_all(message):
-#     bot.reply_to(message, message.text)
+#     telegram_bot.reply_to(message, message.text)
 
 
 def load_data():
@@ -154,12 +154,12 @@ def save_sent_posts():
         mutex.release()
 
 
-def get_new_posts(args):
+def get_new_posts(args, bot, run):
     while RUN:
         posts = vk.get_posts(args["url"])
         for post_id in list(posts.keys())[::-1]:    # reverse
             if post_id not in sent_posts:
-                send_msg(post_id, posts[post_id]['text'], posts[post_id]['media_url'])
+                send_msg(bot, post_id, posts[post_id]['text'], posts[post_id]['media_url'])
                 sent_posts.add(post_id)
         save_sent_posts()
         for i in range(args['posts_interval']):
@@ -180,16 +180,14 @@ if __name__ == '__main__':
 
     logger.info('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
 
-    # run_bot_thread = Thread(target=bot.infinity_polling(), args=(True,), daemon=True)
-    get_posts_thread = Thread(target=get_new_posts, args=(conf,), name='get_posts_thread', daemon=True)
+    # run_bot_thread = Thread(target=telegram_bot.infinity_polling(), args=(True,), daemon=True)
+    get_posts_thread = Thread(target=get_new_posts, args=(conf, telegram_bot, RUN), name='get_posts_thread', daemon=True)
     # run_bot_thread.start()
     get_posts_thread.start()
     try:
-        bot.infinity_polling(none_stop=True)
+        telegram_bot.infinity_polling(none_stop=True)
     except KeyboardInterrupt:
-        bot.stop_polling()
-        run = False
-    bot.stop_polling()
+        telegram_bot.stop_polling()
+        RUN = False
     # run_bot_thread.join()
     get_posts_thread.join()
-
