@@ -17,11 +17,11 @@ bot = telebot.TeleBot(TG_TOKEN, threaded=True)
 logger = logging.getLogger(r"main_log")
 
 
-def logger_init(loggers, logfile, log_level=logging.ERROR,
-                format_str='%(asctime)s (%(filename)s:%(lineno)d %(threadName)s) %(levelname)s - %(name)s: "%(message)s"'):
+def logger_init(loggers, log_file, log_level=logging.ERROR,
+                format_str='%(asctime)s (%(filename)s:%(lineno)d %(threadName)s) %(levelname)s - %(name)s: %(message)s'):
     # format_str = '%(asctime)s %(levelname)s - %(name)s: "%(message)s"'
     formatter = logging.Formatter(format_str)
-    logger_output_handlers = [logging.FileHandler(logfile, 'a'),
+    logger_output_handlers = [logging.FileHandler(log_file, 'a'),
                               logging.StreamHandler(sys.stderr)]
     for h in logger_output_handlers:
         h.setFormatter(formatter)
@@ -153,10 +153,11 @@ def get_new_posts(args):
 if __name__ == '__main__':
     conf = {'url': "https://vk.com/covid19nn",
             'posts_interval': 300,
-            'log_file': r'/tmp/bot.log',
+            # 'log_file': r'/tmp/bot.log',
+            'log_file': r'./bot.log',
             'log_level': logging.DEBUG}
 
-    logger_init((logger, telebot.logger, vk.logger), conf['logfile'], conf['log_level'])
+    logger_init((logger, telebot.logger, vk.logger), conf['log_file'], conf['log_level'])
     load_data()
 
     logger.info('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
