@@ -3,8 +3,11 @@ from threading import Thread
 from time import sleep
 from secrets import TG_TOKEN
 from vk import get_posts
+import logging
 
-bot = telebot.TeleBot(TG_TOKEN, threaded=True)
+bot = telebot.TeleBot(TG_TOKEN, threaded=False)
+telebot.logger.setLevel(logging.DEBUG)
+
 chat_id = set()
 sent_posts = set()
 
