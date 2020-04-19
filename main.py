@@ -11,7 +11,8 @@ bot = telebot.TeleBot(TG_TOKEN, threaded=True)
 log_level = logging.DEBUG
 #
 formatter = logging.Formatter(
-    '%(asctime)s (%(filename)s:%(lineno)d %(threadName)s) %(levelname)s - %(name)s: "%(message)s"'
+   '%(asctime)s %(levelname)s - %(name)s: "%(message)s"'
+    # '%(asctime)s (%(filename)s:%(lineno)d %(threadName)s) %(levelname)s - %(name)s: "%(message)s"'
 )
 # logger_output_handler = logging.StreamHandler(sys.stderr)
 logger_output_handlers = [logging.FileHandler('/tmp/bot.log', 'a'),
