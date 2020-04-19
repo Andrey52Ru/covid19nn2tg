@@ -187,7 +187,9 @@ if __name__ == '__main__':
     get_posts_thread.start()
     try:
         telegram_bot.infinity_polling(none_stop=True)
+        RUN = False
     except KeyboardInterrupt:
+        logger.debug(f"\n==================\n\n============================\n")
         RUN = False
         telegram_bot.stop_polling()
     # run_bot_thread.join()
