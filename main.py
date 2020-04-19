@@ -154,7 +154,7 @@ def save_sent_posts():
         mutex.release()
 
 
-def get_new_posts(args, bot, run):
+def get_new_posts(args, bot):
     while RUN:
         posts = vk.get_posts(args["url"])
         for post_id in list(posts.keys())[::-1]:    # reverse
@@ -165,8 +165,7 @@ def get_new_posts(args, bot, run):
         for i in range(args['posts_interval']):
             if not RUN:
                 break
-            sleep(10)
-            logger.debug(f"+++++++++++++++++++++\nRUN: {str(RUN)}\t-\trun: {str(run)}\n++++++++++++++++++++++")
+            sleep(1)
 
 
 if __name__ == '__main__':
@@ -182,14 +181,13 @@ if __name__ == '__main__':
     logger.info('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
 
     # run_bot_thread = Thread(target=telegram_bot.infinity_polling(), args=(True,), daemon=True)
-    get_posts_thread = Thread(target=get_new_posts, args=(conf, telegram_bot, RUN), name='get_posts_thread', daemon=True)
+    get_posts_thread = Thread(target=get_new_posts, args=(conf, telegram_bot, name='get_posts_thread', daemon=True)
     # run_bot_thread.start()
     get_posts_thread.start()
     try:
         telegram_bot.infinity_polling(none_stop=True)
         RUN = False
     except KeyboardInterrupt:
-        logger.debug(f"\n==================\n\n============================\n")
         RUN = False
         telegram_bot.stop_polling()
     # run_bot_thread.join()
