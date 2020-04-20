@@ -92,11 +92,11 @@ def status_message(message):
 
 
 def send_post(bot, post_id, msg, media):
-    logger.info(f'Sending message {post_id}...')
+    logger.info(f'Sending post {post_id}...')
     for chat in chats:
-        logger.debug(f'\nMessage to chat {chat}:')
+        logger.debug(f'\nPost to chat {chat}:')
         if len(media) > 0:
-            bot.send_message(chat_id=chat, text=msg + '\n[ссылка](' + ')\n[ссылка]('.join(media) + ')',
+            bot.send_message(chat_id=chat, text=msg + u'\n[ссылка](' + u')\n[ссылка]('.join(media) + u')',
                              disable_web_page_preview=False, parse_mode='Markdown')
         else:
             bot.send_message(chat, msg)
