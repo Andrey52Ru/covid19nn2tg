@@ -43,7 +43,7 @@ def logger_init(loggers, log_file, log_level=logging.ERROR,
 #     pass
 
 
-@telegram_bot.message_handler(commands=['start'])
+@telegram_bot.message_handler(commands=['start', 'subscribe'])
 def start_message(message):
     logger.debug(f'Subscribe chat {message.chat.id} ({message.chat.title})')  # Username:{message["from"].username}')
     if message.chat.id not in chats:
@@ -64,7 +64,7 @@ def start_message(message):
         telegram_bot.send_message(message.chat.id, u"Вы уже подписаны на рассылку")
 
 
-@telegram_bot.message_handler(commands=['stop'])
+@telegram_bot.message_handler(commands=['stop', 'unsubscribe'])
 def stop_message(message):
     logger.debug(f'Unsubscribe chat {message.chat.id} ({message.chat.title})')  # Username:{message["from"].username}')
     if message.chat.id in chats:
