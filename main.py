@@ -67,7 +67,7 @@ def start_message(message):
 @telegram_bot.message_handler(commands=['stop'])
 def stop_message(message):
     logger.debug(f'Unsubscribe chat {message.chat.id} ({message.chat.title})')  # Username:{message["from"].username}')
-    if message.chat.id not in chats:
+    if message.chat.id in chats:
         mutex.acquire()
         try:
             chats.remove(message.chat.id)
