@@ -11,7 +11,7 @@ fn_chat_ids = r"./chats.txt"
 RUN = True
 mutex = Lock()
 
-chat_id = set()
+chats = set()
 sent_posts = set()
 
 telegram_bot = telebot.TeleBot(TG_TOKEN, threaded=True)
@@ -45,60 +45,55 @@ def logger_init(loggers, log_file, log_level=logging.ERROR,
 
 @telegram_bot.message_handler(commands=['start'])
 def start_message(message):
-    logger.debug(f'New chat {message.chat.id}...')
-    if message.chat.id not in chat_id:
+    logger.debug(f'Subscribe chat {message.chat.id} ({message.chat.title}). Username:{message["from"].username}')
+    if message.chat.id not in chats:
         mutex.acquire()
         try:
-            chat_id.add(message.chat.id)
-            # save to file
-            f = open(fn_chat_ids, 'w')
-            try:
-                for item in chat_id:
-                    f.write('%s\n' % item)
-            except NameError as e:
-                logger.error(r"Exception: " + str(e))
-                telegram_bot.send_message(message.chat.id, "Try again later")
+            chats.add(message.chat.id)
+            result = save_chats(chats)
+            if not result:
+                logger.info(f'Subscribed: {message.chat.id}. Total: {len(chats)}')
+                telegram_bot.send_message(message.chat.id, u"Вы успешно подписаны на рассылку")
             else:
-                logger.info(f'Success: new chat {message.chat.id}. Total: {len(chat_id)}')
-            finally:
-                f.close()
+                logger.error(r"Subscribe: Exception: " + str(result))
+                telegram_bot.send_message(message.chat.id, u"Что-то пошло не так... Попробуйте позднее")
         finally:
             mutex.release()
-        telegram_bot.send_message(message.chat.id, "Started")
+    else:
+        logger.info(f'Already subscribed: {message.chat.id}. Total: {len(chats)}')
+        telegram_bot.send_message(message.chat.id, u"Вы уже подписаны на рассылку")
 
 
 @telegram_bot.message_handler(commands=['stop'])
 def stop_message(message):
-    logger.debug(f'Removing chat {message.chat.id}...')
-    mutex.acquire()
-    try:
-        chat_id.remove(message.chat.id)
-        # save to file
-        f = open(fn_chat_ids, 'w')
+    logger.debug(f'Unsubscribe chat {message.chat.id} ({message.chat.title}). Username:{message["from"].username}')
+    if message.chat.id not in chats:
+        mutex.acquire()
         try:
-            for item in chat_id:
-                f.write('%s\n' % item)
-        except NameError as e:
-            logger.error(r"Exception: " + str(e))
-            telegram_bot.send_message(message.chat.id, f"{e}\nTry again later")
-        else:
-            logger.info(f'Success: removed chat {message.chat.id}. Total: {len(chat_id)}')
+            chats.remove(message.chat.id)
+            result = save_chats(chats)
+            if not result:
+                logger.info(f'Unsubscribed: {message.chat.id}. Total: {len(chats)}')
+                telegram_bot.send_message(message.chat.id, u"Вы успешно отписаны от рассылки")
+            else:
+                logger.error(r"Unsubscribe: Exception: " + str(result))
+                telegram_bot.send_message(message.chat.id, u"Что-то пошло не так... Попробуйте позднее")
         finally:
-            f.close()
-    finally:
-        mutex.release()
-    telegram_bot.send_message(message.chat.id, "Stop")
+            mutex.release()
+    else:
+        logger.info(f'Already unsubscribed: {message.chat.id}. Total: {len(chats)}')
+        telegram_bot.send_message(message.chat.id, u"Вы уже отписались от рассылки ранее")
 
 
 @telegram_bot.message_handler(commands=['status'])
 def status_message(message):
-    logger.info(f'Status command from chat {message.chat.id}...')
-    telegram_bot.send_message(message.chat.id, "Running...")
+    logger.debug(f'Status command from chat {message.chat.id} ({message.chat.title}). Username:{message["from"].username}')
+    telegram_bot.send_message(message.chat.id, "Alive")
 
 
-def send_msg(bot, post_id, msg, media):
+def send_post(bot, post_id, msg, media):
     logger.info(f'Sending message {post_id}...')
-    for chat in chat_id:
+    for chat in chats:
         logger.debug(f'\nMessage to chat {chat}:')
         if len(media) > 0:
             bot.send_message(chat_id=chat, text=msg + '\n[ссылка](' + ')\n[ссылка]('.join(media) + ')',
@@ -132,7 +127,7 @@ def load_data():
     try:
         f = open(fn_chat_ids, 'r')
         for line in f:
-            chat_id.add(int(line))
+            chats.add(int(line))
     except FileNotFoundError:
         logger.warning(f"\t File not found: {fn_chat_ids}")
     except NameError as e:
@@ -140,6 +135,19 @@ def load_data():
     finally:
         if f:
             f.close()
+
+
+def save_chats(data):
+    f = open(fn_chat_ids, 'w')
+    try:
+        for item in data:
+            f.write('%s\n' % item)
+    except NameError as e:
+        return e
+    else:
+        return None
+    finally:
+        f.close()
 
 
 def save_sent_posts():
@@ -159,7 +167,7 @@ def get_new_posts(args, bot):
         posts = vk.get_posts(args["url"])
         for post_id in list(posts.keys())[::-1]:    # reverse
             if post_id not in sent_posts:
-                send_msg(bot, post_id, posts[post_id]['text'], posts[post_id]['media_url'])
+                send_post(bot, post_id, posts[post_id]['text'], posts[post_id]['media_url'])
                 sent_posts.add(post_id)
         save_sent_posts()
         for i in range(args['posts_interval']):
@@ -178,7 +186,7 @@ if __name__ == '__main__':
     logger_init((logger, telebot.logger, vk.logger), conf['log_file'], conf['log_level'])
     load_data()
 
-    logger.info('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chat_id)))
+    logger.info('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chats)))
 
     # run_bot_thread = Thread(target=telegram_bot.infinity_polling(), args=(True,), daemon=True)
     get_posts_thread = Thread(target=get_new_posts, args=(conf, telegram_bot), name='get_posts_thread', daemon=True)
