@@ -45,7 +45,7 @@ def logger_init(loggers, log_file, log_level=logging.ERROR,
 
 @telegram_bot.message_handler(commands=['start'])
 def start_message(message):
-    logger.debug(f'Subscribe chat {message.chat.id} ({message.chat.title}). Username:{message["from"].username}')
+    logger.debug(f'Subscribe chat {message.chat.id} ({message.chat.title})')  # Username:{message["from"].username}')
     if message.chat.id not in chats:
         mutex.acquire()
         try:
@@ -66,7 +66,7 @@ def start_message(message):
 
 @telegram_bot.message_handler(commands=['stop'])
 def stop_message(message):
-    logger.debug(f'Unsubscribe chat {message.chat.id} ({message.chat.title}). Username:{message["from"].username}')
+    logger.debug(f'Unsubscribe chat {message.chat.id} ({message.chat.title})')  # Username:{message["from"].username}')
     if message.chat.id not in chats:
         mutex.acquire()
         try:
@@ -87,8 +87,14 @@ def stop_message(message):
 
 @telegram_bot.message_handler(commands=['status'])
 def status_message(message):
-    logger.debug(f'Status command from chat {message.chat.id} ({message.chat.title}). Username:{message["from"].username}')
-    telegram_bot.send_message(message.chat.id, "Alive")
+    status = ''
+    if message.chat.id in chats:
+        status = "Subscribed"
+        telegram_bot.send_message(message.chat.id, "Вы подписаны")
+    else:
+        status = "Unsubscribed"
+        telegram_bot.send_message(message.chat.id, "Вы не подписаны")
+    logger.debug(f'Status: {status} From {message.chat.id} ({message.chat.title})')  # Username:{message["from"].username}')
 
 
 def send_post(bot, post_id, msg, media):
