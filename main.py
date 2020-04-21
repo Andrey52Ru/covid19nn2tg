@@ -14,7 +14,7 @@ mutex = Lock()
 chats = set()
 sent_posts = set()
 
-telegram_bot = telebot.TeleBot(TG_TOKEN, threaded=True)
+telegram_bot = telebot.TeleBot(TG_TOKEN, threaded=True, num_threads=1)
 logger = logging.getLogger(r"main_log")
 
 
@@ -171,11 +171,17 @@ def save_sent_posts():
 def get_new_posts(args, bot):
     while RUN:
         posts = vk.get_posts(args["url"])
+        logger.debug(f"get_new_posts: {len(posts)} posts. Last post {list(posts.keys())[0]}")
+        sent_flag = False
         for post_id in list(posts.keys())[::-1]:    # reverse
             if post_id not in sent_posts:
                 send_post(bot, post_id, posts[post_id]['text'], posts[post_id]['media_url'])
                 sent_posts.add(post_id)
+                sent_flag = True
         save_sent_posts()
+        if sent_flag:
+            save_sent_posts()
+            logger.debug(r"Save sent posts")
         for i in range(args['posts_interval']):
             if not RUN:
                 break
