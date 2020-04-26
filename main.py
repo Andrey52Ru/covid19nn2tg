@@ -14,7 +14,7 @@ mutex = Lock()
 chats = set()
 sent_posts = set()
 
-telegram_bot = telebot.TeleBot(TG_TOKEN, threaded=True, num_threads=1)
+telegram_bot = telebot.TeleBot(TG_TOKEN, threaded=True, num_threads=2)
 logger = logging.getLogger(r"main_log")
 
 
@@ -186,6 +186,7 @@ def get_new_posts(args, bot):
             if not RUN:
                 break
             sleep(1)
+    logger.debug(f"get_new_posts: {len(posts)} posts. Last post {list(posts.keys())[0]}")
 
 
 if __name__ == '__main__':
