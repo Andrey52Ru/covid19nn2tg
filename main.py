@@ -186,7 +186,7 @@ def get_new_posts(args, bot):
             if not RUN:
                 break
             sleep(1)
-    logger.debug(f"get_new_posts: {len(posts)} posts. Last post {list(posts.keys())[0]}")
+    logger.debug(f"Stopped getting new posts")
 
 
 if __name__ == '__main__':
