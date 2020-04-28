@@ -99,13 +99,17 @@ def status_message(message):
 
 def send_post(bot, post_id, msg, media):
     logger.info(f'Sending post {post_id}...')
+    i = 0
     for chat in chats:
-        logger.debug(f'\nPost to chat {chat}:')
+        i += 1
+        logger.debug(f'Post to chat #{i} of {len(chats)}: {chat} ')
         if len(media) > 0:
-            bot.send_message(chat_id=chat, text=msg + u'\n[ссылка](' + u')\n[ссылка]('.join(media) + u')',
+            ret_msg = bot.send_message(chat_id=chat, text=msg + u'\n[ссылка](' + u')\n[ссылка]('.join(media) + u')',
                              disable_web_page_preview=False, parse_mode='Markdown')
+            # The last log record
         else:
-            bot.send_message(chat, msg)
+            ret_msg = bot.send_message(chat, msg)
+        logger.debug(f'Posted to chat #{i} of {len(chats)}: {chat} Success: {ret_msg.ok} {ret_msg.result}')
     logger.debug('Post: {}\n\t{}\n\tMedia:'.format(post_id, msg, '\n'.join(media)))
 
 
@@ -178,7 +182,6 @@ def get_new_posts(args, bot):
                 send_post(bot, post_id, posts[post_id]['text'], posts[post_id]['media_url'])
                 sent_posts.add(post_id)
                 sent_flag = True
-        save_sent_posts()
         if sent_flag:
             save_sent_posts()
             logger.debug(r"Save sent posts")
