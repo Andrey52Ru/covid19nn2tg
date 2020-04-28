@@ -194,7 +194,7 @@ def get_new_posts(args, bot):
 
 if __name__ == '__main__':
     conf = {'url': "https://vk.com/covid19nn",
-            'posts_interval': 300,
+            'posts_interval': 30,
             # 'log_file': r'/tmp/bot.log',
             'log_file': r'./bot.log',
             'log_level': logging.DEBUG}
