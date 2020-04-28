@@ -109,7 +109,7 @@ def send_post(bot, post_id, msg, media):
             # The last log record
         else:
             ret_msg = bot.send_message(chat, msg)
-        logger.debug(f'Posted to chat #{i} of {len(chats)}: {chat} Success: {ret_msg.ok} {ret_msg.result}')
+        logger.debug(f'Posted to chat #{i} of {len(chats)}: {chat} Msg: {ret_msg}')
     logger.debug('Post: {}\n\t{}\n\tMedia:'.format(post_id, msg, '\n'.join(media)))
 
 
