@@ -35,7 +35,7 @@ def logger_init(loggers, log_file, log_level=logging.ERROR,
             lg.addHandler(h)
 
     # vk.logger.setLevel(logging.ERROR)
-    telebot.logger.setLevel(logging.ERROR)
+    # telebot.logger.setLevel(logging.ERROR)
 
 
 # @telegram_bot.message_handler(content_types=['text'])
