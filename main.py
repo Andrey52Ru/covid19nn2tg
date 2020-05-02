@@ -106,7 +106,8 @@ def send_post(bot, post_id, msg, media):
         if len(media) > 0:
             ret_msg = bot.send_message(chat_id=chat, text=msg + u'\n[ссылка](' + u')\n[ссылка]('.join(media) + u')',
                              disable_web_page_preview=False, parse_mode='Markdown')
-            # The last log record
+            logger.info(f'+++++++++++++++++++++++++++++++++')
+            # The last log record (bot.send_message) from get_posts_thread
         else:
             ret_msg = bot.send_message(chat, msg)
         logger.debug(f'Posted to chat #{i} of {len(chats)}: {chat} Success: {ret_msg is not None}')
