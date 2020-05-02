@@ -9,6 +9,7 @@ import vk
 fn_sent_posts = r"./sent_posts.txt"
 fn_chat_ids = r"./chats.txt"
 RUN = True
+ALLOW_REGISTRATION = False
 mutex = Lock()
 
 chats = set()
@@ -46,6 +47,11 @@ def logger_init(loggers, log_file, log_level=logging.ERROR,
 @telegram_bot.message_handler(commands=['start', 'subscribe'])
 def start_message(message):
     logger.debug(f'Subscribe chat {message.chat.id} ({message.chat.title})')  # Username:{message["from"].username}')
+    if not ALLOW_REGISTRATION:
+        telegram_bot.send_message(message.chat.id,
+                              u"Для получения оперативной информации Вам следует использовать канал https://t.me/covid19nn")
+        return
+
     if message.chat.id not in chats:
         mutex.acquire()
         try:
@@ -67,6 +73,11 @@ def start_message(message):
 @telegram_bot.message_handler(commands=['stop', 'unsubscribe'])
 def stop_message(message):
     logger.debug(f'Unsubscribe chat {message.chat.id} ({message.chat.title})')  # Username:{message["from"].username}')
+    if not ALLOW_REGISTRATION:
+        telegram_bot.send_message(message.chat.id,
+                              u"Для получения оперативной информации Вам следует использовать канал https://t.me/covid19nn")
+        return
+
     if message.chat.id in chats:
         mutex.acquire()
         try:
