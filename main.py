@@ -103,6 +103,7 @@ def send_post(bot, post_id, msg, media):
     for chat in chats:
         i += 1
         logger.debug(f'Post to chat #{i} of {len(chats)}: {chat} ')
+
         if len(media) > 0:
             ret_msg = bot.send_message(chat_id=chat, text=msg + u'\n[ссылка](' + u')\n[ссылка]('.join(media) + u')',
                              disable_web_page_preview=False, parse_mode='Markdown')
@@ -175,6 +176,7 @@ def save_sent_posts():
 
 def get_new_posts(args, bot):
     while RUN:
+        mutex.acquire()
         posts = vk.get_posts(args["url"])
         logger.debug(f"get_new_posts: {len(posts)} posts. Last post {list(posts.keys())[0]}")
         sent_flag = False
@@ -190,6 +192,7 @@ def get_new_posts(args, bot):
             if not RUN:
                 break
             sleep(1)
+        mutex.release()
     logger.debug(f"Stopped getting new posts")
 
 
