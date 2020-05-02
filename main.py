@@ -115,7 +115,7 @@ def send_post(bot, post_id, msg, media):
             ret_msg = bot.send_message(chat_id=chat, text=msg)
             logger.info(f'+++++++++++++++++++++++++++++++++')
         logger.debug(f'Posted to chat #{i} of {len(chats)}: {chat} Success: {ret_msg is not None}')
-    logger.debug('Stopped sending post: {}\n\t{}\n\tMedia:'.format(post_id, msg, '\n'.join(media)))
+    logger.debug(f'Stopped sending post.: {post_id}')
 
 
 # echo
