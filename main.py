@@ -98,21 +98,24 @@ def status_message(message):
 
 
 def send_post(bot, post_id, msg, media):
-    logger.info(f'Sending post {post_id}...')
+    logger.info(f'Sending post {post_id}')
+    logger.debug('Post: {}\n\t{}\n\tMedia:'.format(post_id, msg, '\n'.join(media)))
     i = 0
     for chat in chats:
         i += 1
         logger.debug(f'Post to chat #{i} of {len(chats)}: {chat} ')
 
         if len(media) > 0:
+
             ret_msg = bot.send_message(chat_id=chat, text=msg + u'\n[ссылка](' + u')\n[ссылка]('.join(media) + u')',
                              disable_web_page_preview=False, parse_mode='Markdown')
             logger.info(f'+++++++++++++++++++++++++++++++++')
             # The last log record (bot.send_message) from get_posts_thread
         else:
-            ret_msg = bot.send_message(chat, msg)
+            ret_msg = bot.send_message(chat_id=chat, text=msg)
+            logger.info(f'+++++++++++++++++++++++++++++++++')
         logger.debug(f'Posted to chat #{i} of {len(chats)}: {chat} Success: {ret_msg is not None}')
-    logger.debug('Post: {}\n\t{}\n\tMedia:'.format(post_id, msg, '\n'.join(media)))
+    logger.debug('Stopped sending post: {}\n\t{}\n\tMedia:'.format(post_id, msg, '\n'.join(media)))
 
 
 # echo
@@ -163,7 +166,7 @@ def save_chats(data):
 
 
 def save_sent_posts():
-    mutex.acquire()
+    # mutex.acquire()
     try:
         with open(fn_sent_posts, 'w') as f:
             for item in sent_posts:
@@ -171,7 +174,8 @@ def save_sent_posts():
     except NameError as e:
         logger.error(r"Exception: " + str(e))
     finally:
-        mutex.release()
+        pass
+        # mutex.release()
 
 
 def get_new_posts(args, bot):
@@ -188,11 +192,12 @@ def get_new_posts(args, bot):
         if sent_flag:
             save_sent_posts()
             logger.debug(r"Save sent posts")
+        mutex.release()
         for i in range(args['posts_interval']):
             if not RUN:
                 break
             sleep(1)
-        mutex.release()
+
     logger.debug(f"Stopped getting new posts")
 
 
