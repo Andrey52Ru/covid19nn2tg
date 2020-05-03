@@ -49,7 +49,7 @@ def start_message(message):
     logger.debug(f'Subscribe chat {message.chat.id} ({message.chat.title})')  # Username:{message["from"].username}')
     if not ALLOW_REGISTRATION:
         telegram_bot.send_message(message.chat.id,
-                              u"Для получения оперативной информации Вам следует использовать канал https://t.me/covid19nn")
+                              u"Для получения оперативной информации Вам следует перейти на канал https://t.me/covid19nn")
         return
 
     if message.chat.id not in chats:
@@ -115,16 +115,19 @@ def send_post(bot, post_id, msg, media):
     for chat in chats:
         i += 1
         logger.debug(f'Post to chat #{i} of {len(chats)}: {chat} ')
+        ret_msg = ''
+        try:
+            if len(media) > 0:
+                ret_msg = bot.send_message(chat_id=chat, text=msg + u'\n[ссылка](' + u')\n[ссылка]('.join(media) + u')',
+                                 disable_web_page_preview=False, parse_mode='Markdown')
+                logger.info(f'+++++++++++++++++++++++++++++++++')
+                # The last log record (bot.send_message) from get_posts_thread
+            else:
+                ret_msg = bot.send_message(chat_id=chat, text=msg)
+                logger.info(f'+++++++++++++++++++++++++++++++++')
+        except NameError as e:
+            logger.error(r"Exception: " + str(e))
 
-        if len(media) > 0:
-
-            ret_msg = bot.send_message(chat_id=chat, text=msg + u'\n[ссылка](' + u')\n[ссылка]('.join(media) + u')',
-                             disable_web_page_preview=False, parse_mode='Markdown')
-            logger.info(f'+++++++++++++++++++++++++++++++++')
-            # The last log record (bot.send_message) from get_posts_thread
-        else:
-            ret_msg = bot.send_message(chat_id=chat, text=msg)
-            logger.info(f'+++++++++++++++++++++++++++++++++')
         logger.debug(f'Posted to chat #{i} of {len(chats)}: {chat} Success: {ret_msg is not None}')
     logger.debug(f'Stopped sending post.: {post_id}')
 
