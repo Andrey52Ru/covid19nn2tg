@@ -231,11 +231,12 @@ if __name__ == '__main__':
     logger.info('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chats)))
 
     # run_bot_thread = Thread(target=telegram_bot.infinity_polling(), args=(True,), daemon=True)
-    get_posts_thread = Thread(target=get_new_posts, args=(conf, telegram_bot), name='get_posts_thread', daemon=True)
+    # get_posts_thread = Thread(target=get_new_posts, args=(conf, telegram_bot), name='get_posts_thread', daemon=True)
     # run_bot_thread.start()
-    get_posts_thread.start()
+    # get_posts_thread.start()
     try:
-        telegram_bot.infinity_polling(none_stop=True)
+        # telegram_bot.infinity_polling(none_stop=True)
+        get_new_posts(conf, telegram_bot)
         RUN = False
     except KeyboardInterrupt:
         RUN = False
