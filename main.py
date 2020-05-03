@@ -126,7 +126,7 @@ def send_post(bot, post_id, msg, media):
             else:
                 ret_msg = bot.send_message(chat_id=chat, text=msg)
                 logger.info(f'+++++++++++++++++++++++++++++++++')
-        except NameError as e:
+        except Exception as e:
             logger.error(r"Exception: " + str(e))
         finally:
             sleep(1)
@@ -195,7 +195,7 @@ def save_sent_posts():
         # mutex.release()
 
 
-def get_new_posts(args, bot):
+def get_new_posts(args, bot, infinite = False):
     while RUN:
         mutex.acquire()
         posts = vk.get_posts(args["url"])
@@ -210,6 +210,8 @@ def get_new_posts(args, bot):
             save_sent_posts()
             logger.debug(r"Save sent posts")
         mutex.release()
+        if not infinite:
+            break
         for i in range(args['posts_interval']):
             if not RUN:
                 break
@@ -231,12 +233,15 @@ if __name__ == '__main__':
     logger.info('Chats: \n\t{}'.format("\n\t".join(str(x) for x in chats)))
 
     # run_bot_thread = Thread(target=telegram_bot.infinity_polling(), args=(True,), daemon=True)
-    get_posts_thread = Thread(target=get_new_posts, args=(conf, telegram_bot), name='get_posts_thread', daemon=True)
+    # get_posts_thread = Thread(target=get_new_posts, args=(conf, telegram_bot, True), name='get_posts_thread', daemon=True)
     # run_bot_thread.start()
-    get_posts_thread.start()
+    # get_posts_thread.start()
     try:
-        telegram_bot.infinity_polling(none_stop=True)
-        RUN = False
+        while RUN:
+            # telegram_bot.infinity_polling(none_stop=True)
+            # RUN = False
+            telegram_bot.polling(none_stop=False)
+            get_new_posts(conf, telegram_bot, False)
     except KeyboardInterrupt:
         RUN = False
         telegram_bot.stop_polling()
