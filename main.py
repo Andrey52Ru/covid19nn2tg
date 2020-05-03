@@ -112,6 +112,7 @@ def send_post(bot, post_id, msg, media):
     logger.info(f'Sending post {post_id}')
     logger.debug('Post: {}\n\t{}\n\tMedia:'.format(post_id, msg, '\n'.join(media)))
     i = 0
+    ch = chats.copy()
     for chat in chats:
         i += 1
         logger.debug(f'Post to chat #{i} of {len(chats)}: {chat} ')
@@ -127,6 +128,8 @@ def send_post(bot, post_id, msg, media):
                 logger.info(f'+++++++++++++++++++++++++++++++++')
         except NameError as e:
             logger.error(r"Exception: " + str(e))
+        finally:
+            sleep(1)
 
         logger.debug(f'Posted to chat #{i} of {len(chats)}: {chat} Success: {ret_msg is not None}')
     logger.debug(f'Stopped sending post.: {post_id}')
