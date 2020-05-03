@@ -242,4 +242,4 @@ if __name__ == '__main__':
         RUN = False
         telegram_bot.stop_polling()
     # run_bot_thread.join()
-    get_posts_thread.join()
+    # get_posts_thread.join()
